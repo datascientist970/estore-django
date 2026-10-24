@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% block title %}Cart{% endblock %}
+
+{% block wel %}
+Welcome To Cart
+{% if user.is_authenticated %}
+    <strong style="color: red">{{ user.first_name }}</strong>
+{% endif %}
+{% endblock %}
+
+{% block p %}
+All Your Purchased Items are <strong style="color: red">Here</strong>
+{% endblock %}
+
+{% block body %}
+{% load static %}
+
+<section id="portfolio" class="portfolio">
+    <div class="container">
+        {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }} alert-dismissable fade show" role="alert">
+            <strong>{{ msg }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+
+        <div class="my-4">
+            <ul class="list-group" id="items"></ul>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mt-3">
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Your Cart Total is <b>RS. <span id="total">0</span></b>. 
+                        Enter Your Details Below to Place Your Orders.
+                    </li>
+                </ol>
+            </nav>
+            <div class="text-center mt-3">
+                <button id="clearCart" class="btn btn-danger">Clear Cart</button>
+            </div>
+        </div>
+
+        <section class="order-form m-4">
+            <div class="container pt-4">
+                <div class="row">
+                    <div class="col-12 px-4">
+                        <h1>Enter Your Details to Place Your Order</h1>
+                        <hr class="mt-1" />
+                    </div>
+                    <form name="payment" action="https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform/" method="post">
+                        {% csrf_token %}
+                        <!-- Required hidden fields for JazzCash -->
+                        <input type="hidden" name="pp_MerchantID" value="YOUR_MERCHANT_ID">
+                        <input type="hidden" name="pp_Amount" value="1000"> <!-- Example amount -->
+                        <input type="hidden" name="pp_TxnRefNo" value="TXN_REF_NO"> <!-- Example transaction reference number -->
+                        <input type="hidden" name="pp_SecureHash" value="YOUR_SECURE_HASH"> <!-- Generated secure hash -->
+
+                        <!-- Customer information fields -->
+                        <div class="row mt-3 mx-4">
+                            <div class="col-12">
+                                <label class="form-label" for="name">Full Name</label>
+                                <input type="text" id="name" name="pp_CustomerName" class="form-control" required />
+                                <br>
+                                <label class="form-label" for="email">Email</label>
+                                <input type="email" id="email" name="pp_CustomerEmail" class="form-control" required />
+                                <br>
+                                <label class="form-label" for="address">Address</label>
+                                <input type="text" id="address" name="pp_CustomerAddress" class="form-control" required />
+                            </div>
+                            <div class="col-sm-6 mt-2 pe-sm-2">
+                                <label class="form-label" for="city">City</label>
+                                <input type="text" id="city" name="pp_CustomerCity" class="form-control" />
+                            </div>
+                            <div class="col-sm-6 mt-2 ps-sm-0">
+                                <label class="form-label" for="zip">Postal / Zip Code</label>
+                                <input type="text" id="zip" name="pp_CustomerZip" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary d-block mx-auto">Submit Payment</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize the cart from localStorage
+    let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
+    const itemsElement = document.getElementById("items");
+    const totalElement = document.getElementById("total");
+    const clearCartButton = document.getElementById("clearCart");
+
+    // Function to update cart display
+    function updateCartDisplay() {
+        itemsElement.innerHTML = ""; // Clear existing list
+        let total = 0;
+
+        if (Object.keys(cart).length === 0) {
+            itemsElement.innerHTML = "<p>Your Cart is Empty</p>";
+        } else {
+            for (const [itemId, details] of Object.entries(cart)) {
+                const { quantity, name, price } = details;
+
+                // Calculate total cost
+                total += quantity * price;
+
+                // Create cart item HTML
+                const itemHTML = `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        ${name}
+                        <div><b>Price: RS. ${price}</b></div>
+                        <span class="badge bg-primary rounded-pill">${quantity}</span>
+                    </li>`;
+                itemsElement.innerHTML += itemHTML;
+            }
+        }
+
+        // Update total price in UI
+        totalElement.innerText = total;
+
+        // Update hidden form fields (if present)
+        const amtField = document.querySelector("[name='pp_Amount']");
+        const jsonField = document.querySelector("[name='json']");
+        if (amtField) amtField.value = total;
+        if (jsonField) jsonField.value = JSON.stringify(cart);
+    }
+
+    // Add event listener for clearing the cart
+    clearCartButton.addEventListener("click", () => {
+        // Clear the cart from localStorage
+        localStorage.removeItem("cart");
+        cart = {}; // Reset cart object
+
+        // Update the display
+        updateCartDisplay();
+
+        alert("Your cart has been cleared.");
+    });
+
+    // Initialize cart display on page load
+    updateCartDisplay();
+});
+</script>
+
+{% endblock %}

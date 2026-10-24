@@ -1,0 +1,7 @@
+{% autoescape off %}
+
+<h5>Selamun Alykum! </h5><strong> {{user.first_name}}</strong>
+Please Click the Below Click to Verify Your account.
+
+http://{{domain}}{% url "activate" uidb64=uid token=token %}
+{% endautoescape %}

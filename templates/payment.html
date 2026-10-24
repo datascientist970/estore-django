@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Payment{% endblock %}
+
+<h1>Payment Success</h1>
+<form name="payment" action="https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform?" method="post">
+    {% for key, value in post_data.items %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+</form>
+
+<script>
+    // Automatically submit the payment form when the page is loaded
+    document.payment.submit();
+</script>

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+
+{% block p %}
+<div style="border:2px solid black; background-color:gray; border-radius:14px" >
+  <h1 class="text-center primary mt-2">Contact Us</h1>
+  {% for msg in messages  %}
+  <div class="alert alert-{{msg.tags}} alert-dismissable fade show" role="alert">
+    {% if user.is_authenticated %}<strong style='color:red;'> {{user.first_name}} {% endif %} {{msg}}</strong>
+   <button type="button" class="btn-close " data-bs-dismiss="alert" arial-label="Close"></button>
+  </div>
+  {% endfor %}
+<div class="mt-5" style="margin-left:250px;">
+  
+  <div class="col-md-4 ">
+  <form style="width: 26rem;" method="post" action="/contact">
+    {% csrf_token %}
+    <!-- Name input -->
+    <div data-mdb-input-init class="form-outline mb-4">
+      <label class="form-label" for="name">Name</label>
+      <input type="text" id="name" value="{{user.first_name}}" name="name" class="form-control" placeholder="Enter Your Name" required />
+    </div>
+  
+    <!-- Email input -->
+    <div data-mdb-input-init class="form-outline mb-4">
+      <label class="form-label" for="email">Email address</label>
+      <input type="email" id="email" value="{{user.email}}" name="email" class="form-control" placeholder="Enter Your Email" required />
+    </div>
+  
+    <!-- Message input -->
+    <div data-mdb-input-init class="form-outline mb-4">
+      <label class="form-label" for="msg">Message</label>
+      <textarea class="form-control" id="mag" name="msg" rows="4" placeholder="Enter Your Message" required></textarea>
+    </div>
+  
+    
+  
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-primary col-md-4 mb-2">Send</button>
+  </form>
+</div>
+
+</div>
+</div>
+
+{% endblock %}

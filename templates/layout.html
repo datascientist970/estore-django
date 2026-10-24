@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+    {% block title %}
+    E-shopping
+    {% endblock %}
+  </title>
+  <style>
+    .logo-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px; /* Adjust size as needed */
+      height: 50px; /* Adjust size as needed */
+      background-color: #000; /* Outer border color to simulate "O" shape */
+      border-radius: 50%; /* Makes the container circular */
+      padding: 5px; /* Adjust padding for border thickness */
+    }
+    
+    .logo-image {
+      width: 150px; /* Adjust size as needed */
+      height: 150px; /* Adjust size as needed */
+      clip-path: circle(50%); /* Clips the image in a circle */
+      object-fit: cover; /* Ensures the image covers the circle without distortion */
+    }
+    
+</style>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+</head>
+
+<body class="index-page">
+
+  <!-- Header -->
+  <header id="header" class="header d-flex align-items-center fixed-top bg-primary">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+      
+      <a href="/" class="logo d-flex align-items-center me-auto">
+        <div class="logo-circle">
+          <img src="{% static 'images/logo.jpg' %}" alt="" class="logo-image">
+        </div>
+      
+      </a>
+
+      <!-- Navbar Menu -->
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="/" class="active">Home</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/orders">Orders</a></li>
+          <li><a class="bg-secondary" href="/contact">Contact</a></li>
+          <li class="dropdown">
+
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+            <a href="#"><span>Account</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="{% url 'signup' %}">Register</a></li>
+              <li><a href="{% url 'login' %}">Login</a></li>
+            </ul>
+            {% endif %}
+          </li>
+          {% comment %} onclick="addtobag()" {% endcomment %}
+          <li><a class="bg-danger mycart" href="/cart" >Cart<span class="cart"></span></a></li>
+          {% if user.is_authenticated %}
+          <li><a href="/profile">Profile</a></li>
+          {% endif %}
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Section -->
+
+    <main class="main">
+   
+      <section id="hero" class="hero section dark-background">
+        <img src="{% static 'images/bg.jpg' %}" alt="" data-aos="fade-in" />
+      
+        <div class="container">
+         
+          <div class="row mt-5" >
+           
+            <div class="col-lg-10">
+            
+              
+              <h2 data-aos="fade-up" data-aos-delay="100">{% block wel %}{% endblock %} </h2>
+              <p data-aos="fade-up" data-aos-delay="200"> {% block p %}{% endblock %}</p>
+            </div>
+            {% if user.is_authenticated %}
+            {% for msg in messages  %}
+                      <div class="alert alert-{{msg.tags}} alert-dismissable fade show" role="alert">
+                       <strong>{{msg}}</strong>
+                       <button type="button" class="btn-close " data-bs-dismiss="alert" arial-label="Close"></button>
+                      </div>
+                      {% endfor %}
+            
+            {% endif %}
+            <div class="col-lg-5" data-aos="fade-up" data-aos-delay="300">
+             
+            
+            </div>
+          </div>
+        </div>
+      </section>
+     
+  </main>
+  
+ 
+  {% block body %}{% endblock %}
+
+  <!-- Footer -->
+  <footer id="footer" class="footer position-relative light-background">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        
+        <!-- Footer About Section -->
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">E-Shopping</span>
+          </a>
+          <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
+          <div class="social-links d-flex mt-4">
+            <a href="#"><i class="bi bi-twitter"></i></a>
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <!-- Useful Links Section -->
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Terms of service</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+
+        <!-- Our Services Section -->
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="#">Web Design</a></li>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">Product Management</a></li>
+            <li><a href="#">Marketing</a></li>
+            <li><a href="#">Graphic Design</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact Us Section -->
+        <div class="col-lg-3 col-md-12 footer-contact">
+          <h4>Contact Us</h4>
+          <p>
+            A108 Adam Street<br>
+            New York, NY 535022<br>
+            United States<br><br>
+            <strong>Phone:</strong> +1 5589 55488 55<br>
+            <strong>Email:</strong> info@example.com<br>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class="container text-center mt-4">
+      <p>&copy; <span>Copyright</span> <strong class="sitename">E-Shopping</strong> All Rights Reserved</p>
+      <div class="credits">
+        Designed by E-Shopping
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'assets/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+</body>
+
+</html>

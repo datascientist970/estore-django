@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block wel %}
+Welcome To Our Website 
+{% if user.is_authenticated %}
+    <strong style="color:red;">{{ user.first_name }}</strong>
+{% endif %}
+{% endblock %}
+
+{% block p %}
+Here You Will Find Your <strong style="color:red;">Best</strong>
+{% endblock %}
+
+{% block body %}
+{% load static %}
+<main>
+    <div class="container-fluid bg-trasparent my-4 p-3">
+        <div class="text-center">
+            <h1>Welcome to Our Shop</h1>
+        </div>
+        {% for product, range, nSlides in products %}
+        <h3 class="my-3 text-center text-success bg-light">{{ product.0.category }}</h3>
+        <div class="container">
+            <div class="row">
+                {% for i in product %}
+                <div class="col-md-3 mt-3">
+                    <img src="/media/{{ i.image }}" class="card-img-top" alt="Not Found" width="200" height="200">
+                    <div class="card-body">
+                        <h5 class="card-title" id="namepr{{ i.id }}">{{ i.product_name }}</h5>
+                        <p class="card-text">{{ i.desc|slice:"0:20" }}...</p>
+                        <h6 class="card-title mb-1">
+                            Price: <span style="font-weight:bold; color:red;" id="pricepr{{ i.id }}">{{ i.price }}</span>
+                        </h6>
+                        <div id="divpr{{ i.id }}" >
+                            <button id="pr{{ i.id }}" onclick="addtobag({{ i.id }})" class="btn btn-danger btn-sm" style="padding: 8px 16px;font-size: 14px;height: 40px;">Shop Now</button>
+                            <a href="/media/{{ i.image }}">
+                                <button class="btn btn-dark btn-sm" style="padding: 8px 16px;font-size: 14px;height: 40px;">View</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+
+<script>
+    function addtobag(itemId) {
+        const name = document.getElementById(`namepr${itemId}`).textContent;
+        const price = parseFloat(document.getElementById(`pricepr${itemId}`).textContent);
+
+        let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
+
+        if (cart[itemId]) {
+            cart[itemId].quantity += 1; // Increment quantity if item exists
+        } else {
+            cart[itemId] = { quantity: 1, name, price }; // Add new item
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartIcon();
+    }
+
+    function updateCartIcon() {
+        let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
+        let totalItems = Object.keys(cart).reduce((acc, id) => acc + cart[id].quantity, 0);
+
+        const cartIcon = document.querySelector(".cart");
+        if (totalItems > 0) {
+            cartIcon.innerHTML = `<span>(${totalItems})</span>`;
+        } else {
+            cartIcon.style.visibility = 'hidden';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateCartIcon);
+</script>
+{% endblock %}
